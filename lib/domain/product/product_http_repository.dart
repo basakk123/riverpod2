@@ -32,33 +32,27 @@ class ProductHttpRepository {
   }
 
   // name, price
-  Product insert(Product product) {
-    // http 통신 코드 (product 전송)
-    product.id = 4;
-
+  Future<Product> insert(Product productReqDto) async {
+    // body
+    String body = jsonEncode(productReqDto.toJson());
+    Response response = await _ref
+        .read(httpConnector)
+        .post("/api/product", productReqDto.toJson());
+    Product product = Product.fromJson(jsonDecode(response.body)["data"]);
     return product;
   }
 
-  Product updateById(int id, Product productDto) {
-    // http 통신 코드
-    final list = [].map((product) {
-      if (product.id == id) {
-        return productDto;
-      } else {
-        return product;
-      }
-    }).toList();
-    productDto.id = id;
-    return productDto;
+  Future<Product> updateById(int id, Product productReqDto) async {
+    String body = jsonEncode(productReqDto.toJson());
+    Response response =
+        await _ref.read(httpConnector).put("/api/product/${id}", body);
+    Product product = Product.fromJson(jsonDecode(response.body)["data"]);
+    return product;
   }
 
-  int deleteById(int id) {
-    // http 통신 코드
-    final list = [].where((product) => product.id != id).toList();
-    if (id == 4) {
-      return -1;
-    } else {
-      return 1;
-    }
+  Future<int> deleteById(int id) async {
+    Response response =
+        await _ref.read(httpConnector).delete("/api/product/${id}");
+    return jsonDecode(response.body)["code"]; // 1 성공
   }
 }

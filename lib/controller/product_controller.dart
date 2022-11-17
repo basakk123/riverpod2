@@ -24,27 +24,31 @@ class ProductController {
     _ref.read(productListViewModel.notifier).refresh(productList);
   }
 
-  void insert(Product productReqDto) {
+  void insert(Product productReqDto) async {
     Product productRespDto =
-        _ref.read(productHttpRepository).insert(productReqDto);
+        await _ref.read(productHttpRepository).insert(productReqDto);
     _ref.read(productListViewModel.notifier).addProduct(productRespDto);
   }
 
-  void deleteById(int id) {
-    int result = _ref.read(productHttpRepository).deleteById(id);
-    if (result == 1) {
+  void deleteById(int id) async {
+    int code = await _ref.read(productHttpRepository).deleteById(id);
+    if (code == 1) {
       _ref.read(productListViewModel.notifier).removeProduct(id);
-    } else {
-      showCupertinoDialog(
-        context: context,
-        builder: (context) => MyAlertDialog(msg: "삭제실패"),
-      );
-    }
+    } else {}
+    //   int result = _ref.read(productHttpRepository).deleteById(id);
+    //   if (result == 1) {
+    //     _ref.read(productListViewModel.notifier).removeProduct(id);
+    //   } else {
+    //     showCupertinoDialog(
+    //       context: context,
+    //       builder: (context) => MyAlertDialog(msg: "삭제실패"),
+    //     );
+    //   }
   }
 
-  void updateById(int id, Product productReqDto) {
+  void updateById(int id, Product productReqDto) async {
     Product productRespDto =
-        _ref.read(productHttpRepository).updateById(id, productReqDto);
+        await _ref.read(productHttpRepository).updateById(id, productReqDto);
     _ref.read(productListViewModel.notifier).updateProduct(productRespDto);
   }
 }

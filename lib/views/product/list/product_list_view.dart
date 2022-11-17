@@ -21,7 +21,22 @@ class ProductListView extends ConsumerWidget {
         },
       ),
       appBar: AppBar(title: Text("product_list_page")),
-      body: ListView.builder(
+      body: _buildListView(pm, pc),
+    );
+  }
+
+  Widget _buildListView(List<Product> pm, ProductController pc) {
+    if (!(pm.length > 0)) {
+      return Center(
+          child: SizedBox(
+        height: 100,
+        width: 100,
+        child: CircularProgressIndicator(
+          color: Colors.red,
+        ),
+      ));
+    } else {
+      return ListView.builder(
         itemCount: pm.length,
         itemBuilder: (context, index) => ListTile(
           key: ValueKey(pm[index].id),
@@ -29,8 +44,7 @@ class ProductListView extends ConsumerWidget {
             pc.deleteById(pm[index].id);
           },
           onLongPress: () {
-            pc.updateById(
-                pm[index].id, Product(id: 0, name: '호박', price: 6000));
+            pc.updateById(pm[index].id, Product(id: 0, name: '호박', price: 999));
           },
           leading: Icon(Icons.account_balance_wallet),
           title: Text(
@@ -39,6 +53,25 @@ class ProductListView extends ConsumerWidget {
           ),
           subtitle: Text("${pm[index].price}"),
         ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: pm.length,
+      itemBuilder: (context, index) => ListTile(
+        key: ValueKey(pm[index].id),
+        onTap: () {
+          pc.deleteById(pm[index].id);
+        },
+        onLongPress: () {
+          pc.updateById(pm[index].id, Product(id: 0, name: '호박', price: 6000));
+        },
+        leading: Icon(Icons.account_balance_wallet),
+        title: Text(
+          "${pm[index].name}",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text("${pm[index].price}"),
       ),
     );
   }
